@@ -21,7 +21,8 @@ acorr=function(x,fmean=c("mean","CellStats")){
   if(fmean=="CellStats") tmean=cellStats(x,mean)
   xm=xm-tmean
   ## should we pad the image here?
-
+  ## create padded version
+  #xpad=as.matrix(extend(tcld, extent(c(-39,90,-20,30)), value=0))
   ## take the fft of the matrix
   fftx=fft(xm)
   fftx2=Re(fft(fftx* Conj(fftx), inverse=TRUE))
