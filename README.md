@@ -1,17 +1,16 @@
 rasterAutocorr
 ====
 
+Quickly calculate spatial autocorrelation on 2D rasters
 
-# Quickly calculate spatial autocorrelation on 2D rasters
-
-# Description
+## Description
 Calculates spatial autocorrelation on a two-dimensional raster* object using fft() methods. Install with: 
 ```
 library(devtools) 
 install_github("adammwilson/rasterAutocorr")
 ```
 
-# Details
+## Details
 
 Package:	 rasterAutocorr
 Type:	 Package
@@ -20,10 +19,10 @@ Date:	 2014-05-23
 License:	 BSD
 autocor calculates spatial autocorrelation.
 
-# Author(s)
+## Author(s)
 
 Adam M. Wilson
 
-# Maintainer: 
+## Maintainer: 
 
 Adam M. Wilson <adam.wilson@yale.edu>
