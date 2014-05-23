@@ -8,7 +8,9 @@
 acorr_dist=function(x){
   x2=acorr_center(x)
   ## distance units need to be updated from raster somehow...
-  dist=distance(x2)*res(x)[1]
+  ## currently it assumes x is in lat-lon and so distance returns meters
+  ## divide by 1000 to km
+  dist=distance(x2)/1000
   return(dist)
 }
 

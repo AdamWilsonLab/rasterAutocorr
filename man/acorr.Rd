@@ -14,7 +14,7 @@ acorr(x, fmean = c("mean", "CellStats"))
 The spatial autocorrelation matrix
 }
 \description{
-Calculates the full spatial autocorrelation on a raster using fft.
+Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.
 }
 \examples{
 \dontrun{
@@ -24,23 +24,24 @@ require(fields)
 require(latticeExtra)
 
 ## create a random raster with some spatial structure
-nx=100  # size of raster
+nx=1000  # size of raster
 ny=round(nx*1.2)
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
 names(r)="z"
 
 #Simulate a Gaussian random field with an exponential covariance function
-## Theta controls degree of autocorrelation, values close to 1 are close to random
-## values near 25 have high autocorrelation
-theta=15
+## Theta is the scale of an exponential decay function.  This controls degree of autocorrelation, values close to 1 are close to random while values near nx/4 have high autocorrelation
+theta=50
 
-grid=list(x=sort(unique(coordinates(r)[,1])),y=sort(unique(coordinates(r)[,2])))
+grid=list(x=seq(xmin(r),xmax(r)-1,by=res(r)[1]),y=seq(ymin(r),ymax(r)-1,res(r)[2]))
+
 obj<-Exp.image.cov(grid=grid, theta=theta, setup=TRUE)
 look<- sim.rf( obj)
 
 values(r)=t(look)
 
-image.plot(r,asp=1)
+image(r,asp=1)
+
 ################################
 ### now let's make the correlogram using fft()
 
@@ -67,7 +68,7 @@ ftd=data.frame(cor=values(a1),dist=values(d1)/1000,dir=values(d2))
 head(ftd)
 
 ## plot the correlogram
-xyplot(cor~dist,groups=cut(dir,5),type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(cor~dist,groups=cut(dir,5),type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
 bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
@@ -82,5 +83,14 @@ bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Cor
 #ncf.cor <- correlog(pdata$x[samp],pdata$y[samp],pdata$z[samp],increment=2)
 #plot(ncf.cor)
 }
+}
+\references{
+http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+
+Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
+
+http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm
+
+http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
 }
 
