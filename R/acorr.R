@@ -17,8 +17,8 @@ acorr=function(x,fmean=c("mean","CellStats")){
   ## convert to matrix
   xm=as(x,"matrix")
   ## subtract the mean of the object
-  if(fmean=="mean") tmean=mean(xm)
-  if(fmean=="CellStats") tmean=cellStats(x,mean)
+  if(fmean=="mean") tmean=mean(xm,na.rm=T)
+  if(fmean=="CellStats") tmean=cellStats(x,mean,na.rm=T)
   xm=xm-tmean
   ## fill missing values with mean
   xm[is.na(xm)]=tmean
