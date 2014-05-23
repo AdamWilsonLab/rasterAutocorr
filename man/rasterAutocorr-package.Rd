@@ -7,12 +7,17 @@ Quickly calculate spatial autocorrelation on 2D rasters
 }
 \description{
 Calculates spatial autocorrelation on a two-dimensional raster* object using fft() methods.
+Install with: \cr
+\code{ \cr
+library(devtools)  \cr
+install_github("adammwilson/rasterAutocorr")}
+
 }
 \details{
 \tabular{ll}{
 Package: \tab rasterAutocorr\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.0001\cr
 Date: \tab 2014-05-23\cr
 License: \tab BSD\cr
 }
@@ -37,5 +42,5 @@ Autocorrelation and Self Convolution \url{http://www.johnloomis.org/ece563/notes
 \code{\link[raster:raster-package]{raster}}
 \code{\link[fft:base]{fft}}
 }
-\examples{
-}
+%\examples{
+%}

@@ -21,7 +21,7 @@ s=interpolate(r,smod,nsim=5)
 ## check out the random image
 ## for some reason there are bands in the image, which I'm sure can be fixed
 ## but they don't matter for this purpose...
-#plot(s)
+plot(s)
 
 
 ################################
@@ -37,8 +37,8 @@ d1=acorr_dist(s)
 
 
 ## plot the autocorrlation and distance
-#  plot(a1,ylab="Shift in Y",xlab="Shift in X",main="Autocorrelation")
-#  plot(d1,ylab="Shift in Y",xlab="Shift in X",main="Distance in units of original raster")
+  plot(a1,ylab="Shift in Y",xlab="Shift in X",main="Autocorrelation")
+  plot(d1,ylab="Shift in Y",xlab="Shift in X",main="Distance in units of original raster")
 
 ## now we can combine the acorr values with distance
 ftd=data.frame(cor=values(a1),dist=values(d1))
@@ -47,9 +47,9 @@ ftd=data.frame(cor=values(a1),dist=values(d1))
 head(ftd)
 
 ## plot the correlogram
-#plot(cor~dist,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin")
+plot(cor~dist,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin")
 
-#xyplot(cor~dist,type=c("p","spline"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col=c("black"),col.line="red",lwd=2)
+xyplot(cor~dist,type=c("p","spline"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col=c("black"),col.line="red",lwd=2)
 
 
 

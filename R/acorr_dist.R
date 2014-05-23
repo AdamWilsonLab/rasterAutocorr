@@ -10,7 +10,7 @@ acorr_dist=function(x){
   dist=x
   dist[,]=NA
   dist[center[1],center[2]]=1
-  dist=distance(dist)*res(r)[1]
+  dist=distance(dist)*res(x)[1]
   return(dist)
 }
 

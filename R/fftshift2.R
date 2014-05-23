@@ -8,7 +8,7 @@
 
 fftshift2=function(x){
   sz = ceiling(dim(x))/2
-  x = x[
+  x[
     c(sz[1]:(sz[1]*2), 1:(sz[1]-1)),
     c(sz[2]:(sz[2]*2), 1:(sz[2])-1)]
 }
