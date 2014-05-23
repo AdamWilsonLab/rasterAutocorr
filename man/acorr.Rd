@@ -20,7 +20,7 @@ Calculates the full spatial autocorrelation on a raster using fft.
 \dontrun{
 # packages used for the data generation
 require(raster)
-require(gstat)
+require(fields)
 require(latticeExtra)
 
 ## create a random raster with some spatial structure
