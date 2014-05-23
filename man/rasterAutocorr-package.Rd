@@ -19,7 +19,7 @@ Package: \tab rasterAutocorr\cr
 Type: \tab Package\cr
 Version: \tab 0.0001\cr
 Date: \tab 2014-05-23\cr
-License: \tab BSD\cr
+License: \tab \url{http://www.r-project.org/Licenses/GPL-3}\cr
 }
 \code{autocor} calculates spatial autocorrelation.
 }

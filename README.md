@@ -1,7 +1,7 @@
 rasterAutocorr
 ====
 
-Quickly calculate spatial autocorrelation on 2D rasters
+Quickly calculate spatial autocorrelation on 2D rasters.
 
 ## Description
 Calculates spatial autocorrelation on a two-dimensional raster* object using fft() methods. Install with: 

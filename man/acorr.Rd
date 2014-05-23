@@ -3,10 +3,12 @@
 \alias{acorr}
 \title{Calculates the full spatial autocorrelation on a raster using fft.}
 \usage{
-acorr(x)
+acorr(x, fmean = c("mean", "CellStats"))
 }
 \arguments{
 \item{x}{A raster* object}
+
+\item{fmean}{function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"}
 }
 \value{
 The spatial autocorrelation matrix
@@ -19,56 +21,57 @@ Calculates the full spatial autocorrelation on a raster using fft.
 # packages used for the data generation
 require(raster)
 require(gstat)
+require(latticeExtra)
 
 ## create a random raster with some spatial structure
 nx=100  # size of raster
-ny=nx
+ny=round(nx*1.2)
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
 names(r)="z"
 
-# define a spatial model using gstat
-range=nx*10
-sill=10
-smod = gstat(formula=~1, data=r, dummy=TRUE, 
-             beta=1, model=vgm(psill=sill,model="Exp",range=range),nmax=100)
+#Simulate a Gaussian random field with an exponential covariance function
+## Theta controls degree of autocorrelation, values close to 1 are close to random
+## values near 25 have high autocorrelation
+theta=15
 
-# predict a new surface using that model
-s=interpolate(r,smod,nsim=5)
+grid=list(x=sort(unique(coordinates(r)[,1])),y=sort(unique(coordinates(r)[,2])))
+obj<-Exp.image.cov(grid=grid, theta=theta, setup=TRUE)
+look<- sim.rf( obj)
 
-## check out the random image
-## for some reason there are bands in the image, which I'm sure can be fixed
-## but they don't matter for this purpose...
-plot(s)
+values(r)=t(look)
 
-
+image.plot(r,asp=1)
 ################################
 ### now let's make the correlogram using fft()
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr(s)
+a1=acorr(r,fmean="CellStats")
 
 ## get distances for each shift to facilitate plotting of the correlogram
-## I think this may be off by a pixel or two, need to check...
-d1=acorr_dist(s)
+d1=acorr_dist(r)
+## get directions for each shift to facilitate plotting of the correlogram
+d2=acorr_dir(r)
 
 
 ## plot the autocorrlation and distance
+  plot(r,ylab="Y",xlab="X",main="Original (Simulated) Raster")
   plot(a1,ylab="Shift in Y",xlab="Shift in X",main="Autocorrelation")
-  plot(d1,ylab="Shift in Y",xlab="Shift in X",main="Distance in units of original raster")
+  plot(d1,ylab="Shift in Y",xlab="Shift in X",main="Distance from center in units of original raster")
+  plot(d2,ylab="Shift in Y",xlab="Shift in X",main="Direction from center (degrees)")
 
 ## now we can combine the acorr values with distance
-ftd=data.frame(cor=values(a1),dist=values(d1))
+ftd=data.frame(cor=values(a1),dist=values(d1)/1000,dir=values(d2))
 
 ## this table has the correlation values and distance for each pixel
 head(ftd)
 
 ## plot the correlogram
-plot(cor~dist,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin")
+xyplot(cor~dist,groups=cut(dir,5),type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",auto.key=T,lwd=2,pch=16,cex=.25)+
+  layer(panel.abline(h=0))
 
-xyplot(cor~dist,type=c("p","spline"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col=c("black"),col.line="red",lwd=2)
-
-
+bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
+  layer(panel.abline(h=0))
 
 
 ## fit the correlogram with ncf using points

@@ -6,11 +6,9 @@
 #' 
 
 acorr_dist=function(x){
-  center=c(round(nrow(x)/2),round(ncol(x)/2))
-  dist=x
-  dist[,]=NA
-  dist[center[1],center[2]]=1
-  dist=distance(dist)*res(x)[1]
+  x2=acorr_center(x)
+  ## distance units need to be updated from raster somehow...
+  dist=distance(x2)*res(x)[1]
   return(dist)
 }
 
