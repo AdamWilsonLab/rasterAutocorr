@@ -20,6 +20,8 @@ acorr=function(x,fmean=c("mean","CellStats")){
   if(fmean=="mean") tmean=mean(xm)
   if(fmean=="CellStats") tmean=cellStats(x,mean)
   xm=xm-tmean
+  ## fill missing values with mean
+  xm[is.na(xm)]=tmean
   ## should we pad the image here?
   ## create padded version
   #xpad=as.matrix(extend(tcld, extent(c(-39,90,-20,30)), value=0))
