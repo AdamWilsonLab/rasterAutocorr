@@ -1,10 +1,16 @@
 
 #' Calculates the full spatial autocorrelation on a raster using fft.
 #'
+#' @description Applies the Wiener-Khinchin theorem \url{http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem} to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.  
 #' @param x A raster* object
 #' @param fmean function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"
 #' @return The spatial autocorrelation matrix
 #' @example examples/examples.R
+#' @references http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+#' @references Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
+#' @references http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm
+#' @references 
+
 
 
 acorr=function(x,fmean=c("mean","CellStats")){

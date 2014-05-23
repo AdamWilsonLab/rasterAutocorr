@@ -11,7 +11,6 @@ Install with: \cr
 \code{ \cr
 library(devtools)  \cr
 install_github("adammwilson/rasterAutocorr")}
-
 }
 \details{
 \tabular{ll}{
