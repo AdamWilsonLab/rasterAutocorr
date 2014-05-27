@@ -3,7 +3,8 @@
 #'
 #' @description Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.  
 #' @param x A raster* object
-#' @param fmean function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"
+##' @param fmean function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"
+#' @param file File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.
 #' @return The spatial autocorrelation matrix
 #' @example examples/examples.R
 #' @references http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
@@ -13,12 +14,11 @@
 
 
 
-acorr=function(x,fmean=c("mean","CellStats")){
+acorr=function(x,file=NULL,...){
   ## convert to matrix
   xm=as(x,"matrix")
   ## subtract the mean of the object
-  if(fmean=="mean") tmean=mean(xm,na.rm=T)
-  if(fmean=="CellStats") tmean=cellStats(x,mean,na.rm=T)
+  tmean=mean(xm,na.rm=T)
   xm=xm-tmean
   ## fill missing values with mean
   xm[is.na(xm)]=tmean
@@ -31,9 +31,10 @@ acorr=function(x,fmean=c("mean","CellStats")){
   ## shift the matrix to bring the low frequency autocorrelation to the center of the image
   acor1=fftshift2(fftx2)
   # Scale to get values in [0,1]
-  acor2=acor1/max(acor1)
+  tmax=max(acor1,na.rm=T)
+  acor2=acor1/tmax
   ## create a raster object to fill with the new values
   dims=dim(acor2)
-  acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
+  acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2,filename=file,...)
   return(acor2)
 }
