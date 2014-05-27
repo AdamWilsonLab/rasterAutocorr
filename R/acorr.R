@@ -36,9 +36,9 @@ acorr=function(x,gain=1000,file=NULL,...){
   acor2=acor1/tmax
   ## create a raster object to fill with the new values
   dims=dim(acor2)
-  acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
   ## multiply by gain to enable storing as integer
-  if(!is.null(gain)) gain(acor2)=gain
+  if(!is.null(gain)) acor2=acor2*gain
+  acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
   acor2=writeRaster(acor2,...)
   rm(xm,fftx,fftx2,acor1);gc()
   return(acor2)
