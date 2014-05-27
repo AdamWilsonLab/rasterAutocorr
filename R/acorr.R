@@ -5,6 +5,7 @@
 #' @param x A raster* object
 ##' @param fmean function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"
 #' @param file File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.
+#' @param gain number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.
 #' @return The spatial autocorrelation matrix
 #' @example examples/examples.R
 #' @references http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
@@ -14,7 +15,7 @@
 
 
 
-acorr=function(x,file=NULL,...){
+acorr=function(x,gain=1000,file=NULL,...){
   ## convert to matrix
   xm=as(x,"matrix")
   ## subtract the mean of the object
@@ -33,6 +34,8 @@ acorr=function(x,file=NULL,...){
   # Scale to get values in [0,1]
   tmax=max(acor1,na.rm=T)
   acor2=acor1/tmax
+  ## multiply by bias to enable storing as integer
+  if(!is.null(bias)) acor2=acor2*bias
   ## create a raster object to fill with the new values
   dims=dim(acor2)
   acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2,filename=file,...)
