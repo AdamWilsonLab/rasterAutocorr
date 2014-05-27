@@ -34,12 +34,12 @@ acorr=function(x,gain=1000,file=NULL,...){
   # Scale to get values in [0,1]
   tmax=max(acor1,na.rm=T)
   acor2=acor1/tmax
-  ## multiply by gain to enable storing as integer
-  if(!is.null(gain)) acor2=acor2*gain
   ## create a raster object to fill with the new values
   dims=dim(acor2)
   acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
-  acor2=writeRaster(acor2,filename=file,...)
+  ## multiply by gain to enable storing as integer
+  if(!is.null(gain)) gain(acor2)=gain
+  acor2=writeRaster(acor2,...)
   rm(xm,fftx,fftx2,acor1);gc()
   return(acor2)
 }
