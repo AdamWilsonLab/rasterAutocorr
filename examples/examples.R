@@ -28,7 +28,7 @@ image(r,asp=1)
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr(r,fmean="CellStats")
+a1=acorr(r)
 
 ## get distances for each shift to facilitate plotting of the correlogram
 d1=acorr_dist(r)

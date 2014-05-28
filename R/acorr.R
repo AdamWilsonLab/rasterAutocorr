@@ -15,7 +15,7 @@
 
 
 
-acorr=function(x,gain=1000,file=NULL,...){
+acorr=function(x,gain=NULL,...){
   ## convert to matrix
   xm=as(x,"matrix")
   ## subtract the mean of the object
@@ -39,7 +39,7 @@ acorr=function(x,gain=1000,file=NULL,...){
   ## multiply by gain to enable storing as integer
   if(!is.null(gain)) acor2=acor2*gain
   acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
-  acor2=writeRaster(acor2,...)
+  if(exists("filename",inherits=F)) acor2=writeRaster(acor2,...)
   rm(xm,fftx,fftx2,acor1);gc()
   return(acor2)
 }
