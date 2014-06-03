@@ -3,12 +3,16 @@
 \alias{acorr}
 \title{Calculates the full spatial autocorrelation on a raster using fft.}
 \usage{
-acorr(x, fmean = c("mean", "CellStats"))
+acorr(x, gain = NULL, ...)
 }
 \arguments{
 \item{x}{A raster* object}
 
 \item{fmean}{function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"}
+
+\item{file}{File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.}
+
+\item{gain}{number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.}
 }
 \value{
 The spatial autocorrelation matrix
@@ -24,7 +28,7 @@ require(fields)
 require(latticeExtra)
 
 ## create a random raster with some spatial structure
-nx=1000  # size of raster
+nx=500  # size of raster
 ny=round(nx*1.2)
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
 names(r)="z"
@@ -47,7 +51,7 @@ image(r,asp=1)
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr(r,fmean="CellStats")
+a1=acorr(r)
 
 ## get distances for each shift to facilitate plotting of the correlogram
 d1=acorr_dist(r)
