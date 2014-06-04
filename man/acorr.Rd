@@ -89,12 +89,12 @@ bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Cor
 }
 }
 \references{
-http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+\url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 
 Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
 
-http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm
+\url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
 
-http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+\url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 }
 

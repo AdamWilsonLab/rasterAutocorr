@@ -8,10 +8,9 @@
 #' @param gain number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.
 #' @return The spatial autocorrelation matrix
 #' @example examples/examples.R
-#' @references http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+#' @references \url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 #' @references Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
-#' @references http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm
-#' @references http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+#' @references \url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
 
 
 
