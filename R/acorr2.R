@@ -52,10 +52,15 @@ acorr2=function(x,gain=NULL,...){
   # compute number of pairs at all lags
   nobs=round(Re(ifft(Conj(fxnull)*fxnull)))
 
-  # compute the autocorrelation
-  g=Re(ifft(Conj(fxnull)*fx1_x1+Conj(fx1_x1)*fxnull-2*Conj(fx1)*fx1))
-  g=g/max(nobs,1)/2
-
+  # compute the variogram
+#  g=Re(ifft(Conj(fxnull)*fx1_x1+Conj(fx1_x1)*fxnull-2*Conj(fx1)*fx1))
+#  g=g/max(nobs,1)/2
+  ## compute the correlogram
+  m1=Re(ifft(Conj(fx1)*fxnull))/max(nobs,1)
+  m2=Re(ifft(Conj(fxnull)*fx1))/max(nobs,1)
+  g=Re(ifft(Conj(fx1)*fx1))
+  g=g/max(nobs,1)/m1*m2
+  
   #rm(fx1_x1,fxnull,fx1)     ## clean up
 
   ## shift the matrix to bring the low frequency autocorrelation to the center of the image
@@ -63,17 +68,17 @@ acorr2=function(x,gain=NULL,...){
 #  nobs2=fftshift2(nobs)
 #  rm(g,nobs);gc()
   ## crop to original dimensions
-  nre=ifelse(nrow(g2)/2==round(nrow(g2)/2),1,2)
-  nce=ifelse(ncol(g2)/2==round(ncol(g2)/2),1,2)
+  nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,0)
+  nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,0)
 
 nobs2=rbind(
-  cbind(nobs[1:nr,1:nc],          nobs[1:nr,(nc2-nc+2):nc2]),
-  cbind(nobs[(nr2-nr+2):nr2,1:nc],nobs[(nr2-nr+2):nr2,(nc2-nc+2):nc2])
+  cbind(nobs[1:nr,1:nc],          nobs[1:nr,(nc2-nc+nce):nc2]),
+  cbind(nobs[(nr2-nr+nre):nr2,1:nc],nobs[(nr2-nr+nre):nr2,(nc2-nc+nre):nc2])
 )
 nobs3=fftshift2(nobs2)      
 g2=rbind(
-  cbind(g[1:nr,1:nc],          g[1:nr,(nc2-nc+2):nc2]),
-  cbind(g[(nr2-nr+2):nr2,1:nc],g[(nr2-nr+2):nr2,(nc2-nc+2):nc2])
+  cbind(g[1:nr,1:nc],          g[1:nr,(nc2-nc+nce):nc2]),
+  cbind(g[(nr2-nr+nre):nr2,1:nc],g[(nr2-nr+nre):nr2,(nc2-nc+nce):nc2])
 )
 g3=fftshift2(g2)      
 
@@ -85,10 +90,10 @@ d1=acorr_dist(rx,nc=nc,nr=nr)
 
 # convert to raster
   g4=d1;values(g4)=g3*10
-  nobs4=d1;values(nobs4)=nobs3
+  nobs4=d1;values(nobs4)=log10(nobs3)
   acor=stack(g4,nobs4,d1)
   names(acor)=c("acor","nobs","dist")
-  if(exists("filename",inherits=F)) acor2=writeRaster(,...)
+  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
 #  rm(x,xm);gc()
   return(acor)
 }
