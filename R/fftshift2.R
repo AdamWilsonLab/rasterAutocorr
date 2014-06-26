@@ -8,10 +8,14 @@
 #' 
 
 fftshift2=function(x){
-  sz = ceiling(dim(x)/2)
+  nr=nrow(x)
+  nc=ncol(x)
+  ## get values to add (accounts for odd and even rows)
+  nre=ifelse(nr/2==round(nr/2),1,1.5)
+  nce=ifelse(nc/2==round(nc/2),1,1.5)
   x2=x[
-    c((sz[1]+1):(sz[1]*2), 1:sz[1]),
-    c((sz[2]+1):(sz[2]*2), 1:sz[2])]
+    c(((nr/2)+nre):(nr), 1:(1+nr/2)),
+    c(((nc/2)+nce):(nc), 1:(1+nc/2))]
   return(x2)
 }
 
