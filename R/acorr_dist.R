@@ -5,8 +5,8 @@
 #' @return A raster object showing the distances from the center pixel
 #' 
 
-acorr_dist=function(x){
-  x2=acorr_center(x)
+acorr_dist=function(x,...){
+  x2=acorr_center(x,...)
   ## distance units need to be updated from raster somehow...
   ## currently it assumes x is in lat-lon and so distance returns meters
   ## divide by 1000 to km

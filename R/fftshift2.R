@@ -8,21 +8,13 @@
 #' 
 
 fftshift2=function(x){
-  sz = floor(dim(x)/2)
-       x2=x[
-      c((sz[1]+1):(sz[1]*2), 1:sz[1]),
-      c((sz[2]+1):(sz[2]*2), 1:sz[2])]
-       return(x2)
-}
-
-
-function (y) 
-{
-  n = length(y)
-  n2 = floor(n/2)
-  ind1 = (1:n2)
-  ind2 = ((n2 + 1):n)
-  aux1 = (y[ind1])
-  aux2 = y[ind2]
-  y = c(aux2, aux1)
+  nr=nrow(x)
+  nc=ncol(x)
+  ## get values to add (accounts for odd and even rows)
+  nre=ifelse(nr/2==round(nr/2),1,1.5)
+  nce=ifelse(nc/2==round(nc/2),1,1.5)
+  x2=x[
+    c(((nr/2)+nre):(nr), 1:(1+nr/2)),
+    c(((nc/2)+nce):(nc), 1:(1+nc/2))]
+  return(x2)
 }

@@ -4,9 +4,16 @@ require(raster)
 require(fields)
 require(latticeExtra)
 
+## first show the examples in Marcotte, Denis. 1996. “Fast Variogram Computation with FFT.” Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
+m1=matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T)
+m2=matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T)
+
+
+
 ## create a random raster with some spatial structure
-nx=500  # size of raster
+nx=501  # size of raster
 ny=round(nx*1.2)
+
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
 names(r)="z"
 
@@ -28,10 +35,8 @@ image(r,asp=1)
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr(r)
+a1=acorr2(r)
 
-## get distances for each shift to facilitate plotting of the correlogram
-d1=acorr_dist(r)
 ## get directions for each shift to facilitate plotting of the correlogram
 d2=acorr_dir(r)
 
@@ -43,16 +48,16 @@ d2=acorr_dir(r)
   plot(d2,ylab="Shift in Y",xlab="Shift in X",main="Direction from center (degrees)")
 
 ## now we can combine the acorr values with distance
-ftd=data.frame(cor=values(a1),dist=values(d1)/1000,dir=values(d2))
+ftd=data.frame(cor=values(a1))#,dir=values(d2))
 
 ## this table has the correlation values and distance for each pixel
 head(ftd)
 
 ## plot the correlogram
-xyplot(cor~dist,groups=cut(dir,5),type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(cor.acor~cor.dist,type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
-bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
+bwplot(cor.acor~cut(cor.dist,pretty(ftd$cor.dist,20)),type=c("p","smooth"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
   layer(panel.abline(h=0))
 
 

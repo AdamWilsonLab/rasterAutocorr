@@ -9,14 +9,16 @@
 #' 
 
 
-acorr_center=function(x){
+acorr_center=function(x,nc,nr){
   center = ceiling(dim(x)/2)
   # Create an empty raster to hold the output
-  center2=raster(stack(x),layer=0)  
+  center2=x#raster(x,xmn=-nc/2,xmx=nc/2,ymn=-nr/2,ymx=nr/2)  
   # Fill the raster with NAs
-  center2[,]=NA
+  values(center2)=NA
   # Replace the center pixel with a one  
-  center2[center[1]+1,center[2]+1]=1
+  nre=ifelse(nrow(x)/2==round(nrow(x)/2),1,0)
+  nce=ifelse(ncol(x)/2==round(ncol(x)/2),1,0)
+  center2[center[1]+nre,center[2]+nce]=1
   return(center2)
 }
 
