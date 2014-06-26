@@ -38,7 +38,8 @@ acorr=function(x,gain=NULL,...){
   ## multiply by gain to enable storing as integer
   if(!is.null(gain)) acor2=acor2*gain
   acor2=raster(acor2,xmn=-dims[2]/2,xmx=dims[2]/2,ymn=-dims[1]/2,ymx=dims[1]/2)
-  if(exists("filename",inherits=F)) acor2=writeRaster(acor2,...)
+  #if(exists("filename",inherits=F)) 
+  acor2=writeRaster(acor2,...)
   rm(xm,fftx,fftx2,acor1);gc()
   return(acor2)
 }
