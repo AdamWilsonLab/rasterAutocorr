@@ -17,7 +17,7 @@
 #x=r2
 #x=m1
 
-acorr2=function(x,normalize=T,...){
+acorr2=function(x,normalize=T,ramlimit=T...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
@@ -51,9 +51,6 @@ acorr2=function(x,normalize=T,...){
   nobs=round(Re(ifft(Conj(fxnull)*fxnull)))
   mnobs=nobs
   mnobs[mnobs<1]=1
-  # compute the variogram
-#  g=Re(ifft(Conj(fxnull)*fx1_x1+Conj(fx1_x1)*fxnull-2*Conj(fx1)*fx1))
-#  g=g/max(nobs,1)/2
   ## compute the correlogram
   m1=Re(ifft(Conj(fx1)*fxnull))/mnobs
   m2=Re(ifft(Conj(fxnull)*fx1))/mnobs
@@ -65,10 +62,7 @@ if(normalize){
     gmax=max(g[!is.nan(g)&g<Inf&g>-Inf])
     g=g/gmax
   }
-  ## shift the matrix to bring the low frequency autocorrelation to the center of the image
-#  g2=fftshift2(g)
-#  nobs2=fftshift2(nobs)
-#  rm(g,nobs);gc()
+  if(ramlimit)  rm(g,nobs);gc()
   ## crop to original dimensions
   nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,2)
   nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,2)
@@ -93,6 +87,6 @@ d1=acorr_dist(rx,nc=nc,nr=nr)
   acor=stack(g4,nobs4,d1)
   names(acor)=c("acor","nobs","dist")
   if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
-#  rm(x,xm);gc()
+  if(ramlimit)  rm(x,x1,fx1,g,g2,g3,g4,d1,nobs,nobs2,nobs3,nobs4);gc()
   return(acor)
 }
