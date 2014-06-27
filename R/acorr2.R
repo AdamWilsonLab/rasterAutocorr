@@ -83,7 +83,7 @@ d1=acorr_dist(rx)
   nobs4=d1;values(nobs4)=log10(nobs3)
   acor=stack(g4,nobs4,d1)
   names(acor)=c("acor","nobs","dist")
-  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
+#  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
   if(ramlimit)  rm(x,x1,fx1,g3,g4,d1,nobs3,nobs4);gc()
   return(acor)
 }
