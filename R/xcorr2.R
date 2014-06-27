@@ -6,7 +6,7 @@
 #' 
 
 acorr_xcorr2=function(x){
-  require(RcppOctave)
+#  require(RcppOctave)
   o_eval("pkg load signal")
   t(.O$xcorr2(x,"coeff"))
 }

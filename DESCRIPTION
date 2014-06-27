@@ -8,8 +8,6 @@ Maintainer: Adam M. Wilson <adam.wilson@yale.edu>
 Description: Calculates spatial autocorrelation on a two-dimensional raster*
     object using fft() methods.
 License: GPL-3
-Depends:
-    raster
-Suggests:
-    latticeExtra
+Imports:  raster
+Suggests: latticeExtra
 #Suggests: RcppOctave
