@@ -10,6 +10,7 @@
 #' @references \url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 #' @references Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
 #' @references \url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
+#' @references \url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 
 #r2=r
 #values(r2)[sample(1:ncell(r2),10000)]=NA
@@ -60,8 +61,10 @@ acorr2=function(x,gain=NULL,...){
   m2=Re(ifft(Conj(fxnull)*fx1))/max(nobs,1)
   g=Re(ifft(Conj(fx1)*fx1))
   g=g/max(nobs,1)/m1*m2
-  
-  #rm(fx1_x1,fxnull,fx1)     ## clean up
+  ### now normalize to a correlogram to enable comparison with other data
+  ## clean up missing and numerical overflows
+  gmax=max(g[!is.nan(g)&g<Inf&g>-Inf])
+  g=g/gmax
 
   ## shift the matrix to bring the low frequency autocorrelation to the center of the image
 #  g2=fftshift2(g)
