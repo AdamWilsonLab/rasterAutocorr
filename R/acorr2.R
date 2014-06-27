@@ -71,8 +71,8 @@ acorr2=function(x,gain=NULL,...){
 #  nobs2=fftshift2(nobs)
 #  rm(g,nobs);gc()
   ## crop to original dimensions
-  nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,0)
-  nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,0)
+  nre=2#ifelse(nrow(g)/2==round(nrow(g)/2),1,0)
+  nce=2#ifelse(ncol(g)/2==round(ncol(g)/2),1,0)
 
 nobs2=rbind(
   cbind(nobs[1:nr,1:nc],          nobs[1:nr,(nc2-nc+nce):nc2]),

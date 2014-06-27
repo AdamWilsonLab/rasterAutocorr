@@ -11,10 +11,15 @@ fftshift2=function(x){
   nr=nrow(x)
   nc=ncol(x)
   ## get values to add (accounts for odd and even rows)
-  nre=ifelse(nr/2==round(nr/2),1,1.5)
-  nce=ifelse(nc/2==round(nc/2),1,1.5)
-  x2=x[
-    c(((nr/2)+nre):(nr), 1:(1+nr/2)),
-    c(((nc/2)+nce):(nc), 1:(1+nc/2))]
+  df=1
+  nre=ifelse(nr/2==round(nr/2),1,0)
+  nce=ifelse(nc/2==round(nc/2),1,0)
+
+  x2=x[c((ceiling((nr-nre)/2):2)*df,1,(nr:floor((nr-nre)/2))*df),
+     c((ceiling((nc-nce)/2):2)*df,1,(nc:floor((nc-nce)/2))*df) ]
+
+#  x2=x[
+#    c(((nr/2)+nre):(nr), 1:(nre+(nr/2))),
+#    c(((nc/2)+nce):(nc), 1:(nce+(nc/2)))]
   return(x2)
 }
