@@ -3,7 +3,6 @@
 #'
 #' @description Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.  
 #' @param x A raster* object. Missing values are indicated by NA.
-##' @param normalize logical indicating whether variogram should be normalized by the maximum value to generate a correlogram.
 #' @param file File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.
 #' @return The spatial autocorrelation matrix
 #' @references \url{en.wikipedia.org/wiki/WienerKhinchin_theorem}
@@ -12,7 +11,7 @@
 #' @references \url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 #' @example examples/examples.R
 
-acorr2=function(x,normalize=T,...){
+acorr2=function(x,...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
@@ -21,10 +20,6 @@ acorr2=function(x,normalize=T,...){
   # speed (a power of 2) and memory required
   nr2=ifelse(nr<5,5,ceiling((2*nr-1)/8)*8)
   nc2=ifelse(nc<5,5,ceiling((2*nc-1)/8)*8)  
-  ## if nr2 or nc2 is even, make it odd
-  ## this makes shifting the fft's easier
-#  nr2=ifelse(nr2/2==round(nr2/2),nr2+1,nr2)
-#  nc2=ifelse(nc2/2==round(nc2/2),nc2+1,nc2)
   ## create a new extent by padding to the right and below with 0s
   resx=res(x)
   extx=extent(x)
@@ -32,12 +27,10 @@ acorr2=function(x,normalize=T,...){
   rx=extend(x,extx2,val=0)
   ## convert to matrix
   x1=as(rx,"matrix")
-  # form an indicator matrix:
-  # 1's for all data values
-  # O's for missing values
-  # in data matrix, replace missing values by 0;
+  # make an indicator matrix with 1's for all data values & O's for missing values
   xnull=matrix(0,nrow=nr2,ncol=nc2)
   xnull[1:nr,1:nc][as.matrix(!is.na(x))]=1
+  # in data matrix, replace missing values by 0;
   x1[xnull==0]=0
 
   fx1=fft(x1)  # fourier transform of xl
@@ -53,23 +46,13 @@ acorr2=function(x,normalize=T,...){
   m2=Re(ifft(Conj(fxnull)*fx1))/mnobs
   g=Re(ifft(Conj(fx1)*fx1)/mnobs-m1*m2)
   
-  if(normalize){
-    ## now normalize to a correlogram to enable comparison with other data
-    ## clean up missing and numerical overflows
-      gmax=max(g[!is.nan(g)&g<Inf&g>-Inf],na.rm=T)
-      g=g/gmax
-    }
-  ## crop to original dimensions
-  nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,2)
-  nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,2)
-
 nobs2=fftshift2(nobs)      
 g2=fftshift2(g)*10      
 
 ## get distances in km
 d1=acorr_dist(rx)
 
-# convert to raster
+# convert back to raster
   g3=d1;values(g3)=g2
   nobs3=d1;values(nobs3)=log10(nobs2)
   acor=stack(g3,nobs3,d1)
