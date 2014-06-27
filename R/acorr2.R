@@ -59,7 +59,6 @@ if(normalize){
     gmax=max(g[!is.nan(g)&g<Inf&g>-Inf],na.rm=T)
     g=g/gmax
   }
-  if(ramlimit)  rm(g,nobs);gc()
   ## crop to original dimensions
   nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,2)
   nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,2)
@@ -84,6 +83,6 @@ d1=acorr_dist(rx)
   acor=stack(g4,nobs4,d1)
   names(acor)=c("acor","nobs","dist")
 #  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
-  if(ramlimit)  rm(x,x1,fx1,g3,g4,d1,nobs3,nobs4);gc()
+  if(ramlimit)  rm(x,x1,fx1,g,nobs,g3,g4,d1,nobs3,nobs4);gc()
   return(acor)
 }

@@ -19,7 +19,7 @@ round(as.matrix(ac[["acor"]])/10,3)
 
 #######################################################
 ## create a random raster with some spatial structure
-nx=501  # size of raster
+nx=500  # size of raster
 ny=round(nx*1.2)
 
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
