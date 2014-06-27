@@ -5,11 +5,19 @@ require(fields)
 require(latticeExtra)
 
 ## first show the examples in Marcotte, Denis. 1996. “Fast Variogram Computation with FFT.” Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
-m1=matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T)
-m2=matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T)
+m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
+m2=raster(matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T))
+
+ac=acorr2(m1)
+
+## confirm nobs == nh11 on top of page 1179
+10^as.matrix(ac[["nobs"]])
+
+## comfirm acor= gh11 on top of page 1179
+round(as.matrix(acorr2(m1,normalize=F)[["acor"]])/10,3)
 
 
-
+#######################################################
 ## create a random raster with some spatial structure
 nx=501  # size of raster
 ny=round(nx*1.2)
@@ -61,11 +69,20 @@ bwplot(cor.acor~cut(cor.dist,pretty(ftd$cor.dist,20)),type=c("p","smooth"),data=
   layer(panel.abline(h=0))
 
 
-## fit the correlogram with ncf using points
-#library(ncf)
-#pdata=cbind.data.frame(coordinates(s),z=values(s))
-## sample cause it's slow
-#samp=sample(1:nrow(pdata),1000)
-#ncf.cor <- correlog(pdata$x[samp],pdata$y[samp],pdata$z[samp],increment=2)
-#plot(ncf.cor)
-}
+###
+## Matlab/Octave script
+x1=[3 6 5 ; 7 2 2 ; 4 NaN 0]
+[n,p]=size(x1); 
+ncols=2*p-1;
+nrows=2*n-1;
+nr2=5
+nc2=5
+x1id=~isnan(x1);
+x1(~x1id)=zeros(sum(sum(~x1id),1);
+fx1=fft2(x1,nr2,nc2);
+fx1id=fft2(x1id,nr2,nc2);
+nh11=round(real(ifft2(conj(fx1id) .*fx1id)));
+m1=real(ifft2(conj(fx1) .*fx1id)) ./max(nh11,1);
+m2=real(ifft2(conj(fx1id) .*fx1)) ./max(nh11,1)
+gh11=real(ifft2(conj(fx1) .*fx1)); gh11=gh11./max(nh11,1)-m1.*m2;
+
