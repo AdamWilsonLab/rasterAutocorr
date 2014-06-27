@@ -15,6 +15,8 @@ The transformed matrix
 Rearranges outputs from fft to move the zero-frequency component to the center of the matrix.  This is useful to visualize a Fourier transform with the zero-frequency component in the center of the image.
 }
 \references{
+Adapted from GNU Octave's fftshift function (\url{http://octave.sourceforge.net/octave/function/fftshift.html})
+
 \url{http://www.mathworks.com/help/matlab/ref/fftshift.html}
 
 \url{http://stackoverflow.com/questions/5735720/effcient-way-to-do-fft-shift-in-matlab-without-using-fftshift-function}

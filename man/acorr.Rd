@@ -8,10 +8,6 @@ acorr(x, gain = NULL, ...)
 \arguments{
 \item{x}{A raster* object}
 
-\item{fmean}{function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"}
-
-\item{file}{File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.}
-
 \item{gain}{number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.}
 }
 \value{
@@ -27,9 +23,24 @@ require(raster)
 require(fields)
 require(latticeExtra)
 
+## first show the examples in Marcotte, Denis. 1996. “Fast Variogram Computation with FFT.” Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
+m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
+m2=raster(matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T))
+
+ac=acorr2(m1,normalize=F)
+
+## confirm nobs == nh11 on top of page 1179
+10^as.matrix(ac[["nobs"]])
+
+## comfirm acor= gh11 on top of page 1179
+round(as.matrix(ac[["acor"]])/10,3)
+
+
+#######################################################
 ## create a random raster with some spatial structure
-nx=500  # size of raster
+nx=501  # size of raster
 ny=round(nx*1.2)
+
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
 names(r)="z"
 
@@ -51,41 +62,48 @@ image(r,asp=1)
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr(r)
+a1=acorr2(r)
 
-## get distances for each shift to facilitate plotting of the correlogram
-d1=acorr_dist(r)
 ## get directions for each shift to facilitate plotting of the correlogram
-d2=acorr_dir(r)
+#d2=acorr_dir(r)
 
 
 ## plot the autocorrlation and distance
   plot(r,ylab="Y",xlab="X",main="Original (Simulated) Raster")
   plot(a1,ylab="Shift in Y",xlab="Shift in X",main="Autocorrelation")
-  plot(d1,ylab="Shift in Y",xlab="Shift in X",main="Distance from center in units of original raster")
   plot(d2,ylab="Shift in Y",xlab="Shift in X",main="Direction from center (degrees)")
 
 ## now we can combine the acorr values with distance
-ftd=data.frame(cor=values(a1),dist=values(d1)/1000,dir=values(d2))
+ftd=data.frame(cor=values(a1))#,dir=values(d2))
 
 ## this table has the correlation values and distance for each pixel
 head(ftd)
 
 ## plot the correlogram
-xyplot(cor~dist,groups=cut(dir,5),type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(cor.acor/10~cor.dist,type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
-bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
+bwplot(cor.acor/10~cut(cor.dist,pretty(ftd$cor.dist,20)),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond\\nto shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
   layer(panel.abline(h=0))
 
 
-## fit the correlogram with ncf using points
-#library(ncf)
-#pdata=cbind.data.frame(coordinates(s),z=values(s))
-## sample cause it's slow
-#samp=sample(1:nrow(pdata),1000)
-#ncf.cor <- correlog(pdata$x[samp],pdata$y[samp],pdata$z[samp],increment=2)
-#plot(ncf.cor)
+###
+## Matlab/Octave script
+#x1=[3 6 5 ; 7 2 2 ; 4 NaN 0]
+#[n,p]=size(x1); 
+#ncols=2*p-1;
+#nrows=2*n-1;
+#nr2=5
+#nc2=5
+#x1id=~isnan(x1);
+#x1(~x1id)=zeros(sum(sum(~x1id),1);
+#fx1=fft2(x1,nr2,nc2);
+#fx1id=fft2(x1id,nr2,nc2);
+#nh11=round(real(ifft2(conj(fx1id) .*fx1id)));
+#m1=real(ifft2(conj(fx1) .*fx1id)) ./max(nh11,1);
+#m2=real(ifft2(conj(fx1id) .*fx1)) ./max(nh11,1)
+#gh11=real(ifft2(conj(fx1) .*fx1)); gh11=gh11./max(nh11,1)-m1.*m2;
+
 }
 }
 \references{
@@ -94,7 +112,5 @@ bwplot(cor~cut(dist,pretty(ftd$dist,20)),type=c("p","smooth"),data=ftd,ylab="Cor
 Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
 
 \url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
-
-\url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 }
 

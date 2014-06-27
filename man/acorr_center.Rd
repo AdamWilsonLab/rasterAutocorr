@@ -13,6 +13,6 @@ A raster object with all cells NA except the center pixel.
 }
 \description{
 Performs the following functions. 1) create an empty raster to hold the output, 2) fill the raster with NAs, 3) Set the center pixel equal to 1.
-This faciliates using other functions in the \pkg{raster} package that calculate distance and direction to the closest non-NA pixel.  This is useful because the output of \code{\link{autocor}} returns the spatial autocorrelation for all directions simutaneously and thus needs to be linked to distance and direction to generate a correlogram.
+This faciliates using other functions in the \pkg{raster} package that calculate distance and direction to the closest non-NA pixel.  This is useful because the output of \code{\link{acorr}} returns the spatial autocorrelation for all directions simutaneously and thus needs to be linked to distance and direction to generate a correlogram.
 }
 

@@ -3,14 +3,12 @@
 #'
 #' @description Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.  
 #' @param x A raster* object
-##' @param fmean function to use to calculate the overall mean of the raster.  For small objects, "mean" is fine, but for larger rasters it is recommended to use "CellStats"
-#' @param file File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.
 #' @param gain number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.
 #' @return The spatial autocorrelation matrix
-#' @example examples/examples.R
 #' @references \url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
 #' @references Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
 #' @references \url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
+#' @example examples/examples.R
 
 
 
