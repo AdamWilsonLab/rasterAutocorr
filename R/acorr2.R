@@ -17,7 +17,7 @@
 #x=r2
 #x=m1
 
-acorr2=function(x,normalize=T,ramlimit=T...){
+acorr2=function(x,normalize=T,ramlimit=T,...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
