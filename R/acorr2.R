@@ -12,7 +12,7 @@
 #' @references \url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 #' @example examples/examples.R
 
-acorr2=function(x,normalize=T,ramlimit=T,...){
+acorr2=function(x,normalize=T,...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
@@ -52,37 +52,29 @@ acorr2=function(x,normalize=T,ramlimit=T,...){
   m1=Re(ifft(Conj(fx1)*fxnull))/mnobs
   m2=Re(ifft(Conj(fxnull)*fx1))/mnobs
   g=Re(ifft(Conj(fx1)*fx1)/mnobs-m1*m2)
-
-if(normalize){
-  ## now normalize to a correlogram to enable comparison with other data
-  ## clean up missing and numerical overflows
-    gmax=max(g[!is.nan(g)&g<Inf&g>-Inf],na.rm=T)
-    g=g/gmax
-  }
+  
+  if(normalize){
+    ## now normalize to a correlogram to enable comparison with other data
+    ## clean up missing and numerical overflows
+      gmax=max(g[!is.nan(g)&g<Inf&g>-Inf],na.rm=T)
+      g=g/gmax
+    }
   ## crop to original dimensions
   nre=ifelse(nrow(g)/2==round(nrow(g)/2),1,2)
   nce=ifelse(ncol(g)/2==round(ncol(g)/2),1,2)
 
-#nobs2=rbind(
-#  cbind(nobs[1:nr,1:nc],          nobs[1:nr,(nc2-nc+2):nc2]),
-#  cbind(nobs[(nr2-nr+2):nr2,1:nc],nobs[(nr2-nr+2):nr2,(nc2-nc+2):nc2])
-#)
-nobs3=fftshift2(nobs)      
-#g2=rbind(
-#  cbind(g[1:nr,1:nc],          g[1:nr,(nc2-nc+2):nc2]),
-#  cbind(g[(nr2-nr+2):nr2,1:nc],g[(nr2-nr+2):nr2,(nc2-nc+2):nc2])
-#)
-g3=fftshift2(g)*10      
+nobs2=fftshift2(nobs)      
+g2=fftshift2(g)*10      
 
 ## get distances in km
 d1=acorr_dist(rx)
 
 # convert to raster
-  g4=d1;values(g4)=g3
-  nobs4=d1;values(nobs4)=log10(nobs3)
-  acor=stack(g4,nobs4,d1)
+  g3=d1;values(g3)=g2
+  nobs3=d1;values(nobs3)=log10(nobs2)
+  acor=stack(g3,nobs3,d1)
   names(acor)=c("acor","nobs","dist")
 #  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
-  if(ramlimit)  rm(x,x1,fx1,g,nobs,g3,g4,d1,nobs3,nobs4);gc()
+  rm(x,rx,x1,fx1,fx1_x1,fxnull,m1,m2,g,nobs,g3,g4,d1,nobs3,nobs4);gc()
   return(acor)
 }
