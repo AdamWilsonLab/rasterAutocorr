@@ -61,8 +61,10 @@ acorr2=function(x,gain=NULL,...){
   m2=Re(ifft(Conj(fxnull)*fx1))/max(nobs,1)
   g=Re(ifft(Conj(fx1)*fx1))
   g=g/max(nobs,1)/m1*m2
-  
-  #rm(fx1_x1,fxnull,fx1)     ## clean up
+  ### now normalize to a correlogram to enable comparison with other data
+  ## clean up missing and numerical overflows
+  gmax=max(g[!is.nan(g)&g<Inf&g>-Inf])
+  g=g/gmax
 
   ## shift the matrix to bring the low frequency autocorrelation to the center of the image
 #  g2=fftshift2(g)
