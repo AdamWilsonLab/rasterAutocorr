@@ -58,6 +58,6 @@ d1=acorr_dist(rx)
   acor=stack(g3,nobs3,d1)
   names(acor)=c("acor","nobs","dist")
 #  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
-  rm(x,rx,x1,fx1,fx1_x1,fxnull,m1,m2,g,nobs,g3,g4,d1,nobs3,nobs4);gc()
+  rm(x,rx,x1,fx1,fx1_x1,fxnull,m1,m2,g,nobs,g3,d1,nobs3);gc()
   return(acor)
 }

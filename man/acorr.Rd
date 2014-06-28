@@ -22,6 +22,7 @@ Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fas
 require(raster)
 require(fields)
 require(latticeExtra)
+library(dplyr)
 
 ## first show the examples in Marcotte, Denis. 1996. “Fast Variogram Computation with FFT.” Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
 m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
@@ -38,7 +39,7 @@ round(as.matrix(ac[["acor"]])/10,3)
 
 #######################################################
 ## create a random raster with some spatial structure
-nx=501  # size of raster
+nx=500  # size of raster
 ny=round(nx*1.2)
 
 r=raster(nrows=ny, ncols=nx,vals=1,xmn=-nx/2, xmx=nx/2, ymn=-ny/2, ymx=ny/2)
@@ -55,8 +56,6 @@ look<- sim.rf( obj)
 
 values(r)=t(look)
 
-image(r,asp=1)
-
 ################################
 ### now let's make the correlogram using fft()
 
@@ -65,7 +64,7 @@ image(r,asp=1)
 a1=acorr2(r)
 
 ## get directions for each shift to facilitate plotting of the correlogram
-#d2=acorr_dir(r)
+d2=acorr_dir(r)
 
 
 ## plot the autocorrlation and distance
@@ -76,11 +75,22 @@ a1=acorr2(r)
 ## now we can combine the acorr values with distance
 ftd=data.frame(cor=values(a1))#,dir=values(d2))
 
+## round to  faciliate binning
+ftd$dist2=round(ftd$cor.dist,3)#,c(0:50,seq(51,1000,by=10)))
+## take mean by km
+ftd2 <- group_by(ftd, dist2)
+ftd2 <- summarise(ftd2,
+                  min = min(cor.acor, na.rm = TRUE),
+                  max = max(cor.acor, na.rm = TRUE),
+                  sd = sd(cor.acor, na.rm = TRUE),
+                  mean = mean(cor.acor, na.rm = TRUE)
+)
+
 ## this table has the correlation values and distance for each pixel
-head(ftd)
+head(ftd2)
 
 ## plot the correlogram
-xyplot(cor.acor/10~cor.dist,type=c("p","smooth"),span=.3,data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(mean/10~dist2,type=c("l"),span=.3,data=ftd2,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
 bwplot(cor.acor/10~cut(cor.dist,pretty(ftd$cor.dist,20)),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond\\nto shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
