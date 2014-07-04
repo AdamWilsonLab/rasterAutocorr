@@ -11,7 +11,7 @@
 #' @references \url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 #' @example examples/examples.R
 
-acorr2=function(x,...){
+acorr2=function(x,padlongitude=T,...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
@@ -19,7 +19,7 @@ acorr2=function(x,...){
   # find the closest multiple of 8 to obtain a good compromise between
   # speed (a power of 2) and memory required
   nr2=ifelse(nr<5,5,ceiling((2*nr-1)/8)*8)
-  nc2=ifelse(nc<5,5,ceiling((2*nc-1)/8)*8)  
+  nc2=ifelse(!padlongitude,nc,ifelse(nc<5,5,ceiling((2*nc-1)/8)*8))  
   ## create a new extent by padding to the right and below with 0s
   resx=res(x)
   extx=extent(x)
