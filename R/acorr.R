@@ -3,8 +3,7 @@
 #'
 #' @description Applies the Wiener-Khinchin theorem to extract spatial autocorrelation using Fast Fourier Transform techniques.  This results in an extremely fast way to calculate a complete correlogram (correlation as a function of distance) for a raster image.  
 #' @param x A raster* object. Missing values are indicated by NA.
-#' @param padlongitude `logical` indicating whether to pad the file in the longitude (x) dimension.  If the raster spans from -180 to 180, set padlongitude=F
-#' @param ... passed to writeRaster.  If filename exists, output file will be written using writeRaster.  If NULL a temporary file is written as in the raster package.
+#' @param file File to write results to as in writeRaster.  If NULL a temporary file is written as in the raster package.
 #' @return The spatial autocorrelation matrix
 #' @references \url{en.wikipedia.org/wiki/WienerKhinchin_theorem}
 #' @references Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
@@ -12,7 +11,7 @@
 #' @references \url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 #' @example examples/examples.R
 
-acorr=function(x,padlongitude=T,...){
+acorr=function(x,padlongitude=T,verbose=T,...){
   # dimensions of raster
   nr <- nrow(x)
   nc <- ncol(x)
@@ -25,20 +24,28 @@ acorr=function(x,padlongitude=T,...){
   resx=res(x)
   extx=extent(x)
   extx2=extent(c(xmin=extx@xmin,xmax=extx@xmax+(resx[1]*(nc2-nc)),ymin=extx@ymin-(resx[2]*(nr2-nr)),ymax=extx@ymax))
+  if(verbose) print("Padding the array")
   rx=extend(x,extx2,val=0)
   ## convert to matrix
   x1=as(rx,"matrix")
   # make an indicator matrix with 1's for all data values & O's for missing values
-  xnull=matrix(0,nrow=nr2,ncol=nc2)
-  xnull[1:nr,1:nc][as.matrix(!is.na(x))]=1
+  if(verbose) print("Identifying missing data")
+#  xnull=matrix(0,nrow=nr2,ncol=nc2)
+#  xnull[1:nr,1:nc][as.matrix(!is.na(x))]=1
+  xnull=as.matrix(extend(!is.na(x),extx2,val=0))
+#  matrix(0,nrow=nr2,ncol=nc2)
+#  xnull[1:nr,1:nc][]=1
+  
   # in data matrix, replace missing values by 0;
   x1[xnull==0]=0
 
+  if(verbose) print("Running the initial FFTs")  
   fx1=fft(x1)  # fourier transform of xl
   fx1_x1=fft(x1*x1)    # fourier transform of x1*x1
   
-  fxnull=fft(xnull)  # fourier transform of the indicator matriJ
+  fxnull=fft(xnull)  # fourier transform of the indicator matrik
   # compute number of pairs at all lags
+  if(verbose) print("Computing the number of observations at each lag")
   nobs=round(Re(ifft(Conj(fxnull)*fxnull)))
   mnobs=nobs
   mnobs[mnobs<1]=1
@@ -46,23 +53,24 @@ acorr=function(x,padlongitude=T,...){
   m1=Re(ifft(Conj(fx1)*fxnull))/mnobs
   m2=Re(ifft(Conj(fxnull)*fx1))/mnobs
   g=Re(ifft(Conj(fx1)*fx1)/mnobs-m1*m2)
+
+  if(verbose) print("Shifting the FFT array")
   
 nobs2=fftshift2(nobs)      
 g2=fftshift2(g)*10      
 
 ## get distances in km
-d1=acorr_dist(rx)
+  if(verbose) print("Calculating distances")
+  d1=acorr_dist(rx)
 
 # convert back to raster
+  if(verbose) print("Convert back to raster* format")
   g3=d1;values(g3)=g2
   nobs3=d1;values(nobs3)=log10(nobs2)
   acor=stack(g3,nobs3,d1)
   names(acor)=c("acor","nobs","dist")
+#  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
+  if(verbose) print("Cleaning up")
   rm(x,rx,x1,fx1,fx1_x1,fxnull,m1,m2,g,nobs,g3,d1,nobs3);gc()
-  if(!exists("filename",inherits=F)) return(acor)
-  if(exists("filename",inherits=F)){
-    acor2=writeRaster(acor,...)
-    rm(acor)
-    return(acor2)
-  }
+  return(acor)
 }
