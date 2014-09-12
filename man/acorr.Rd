@@ -3,12 +3,14 @@
 \alias{acorr}
 \title{Calculates the full spatial autocorrelation on a raster using fft.}
 \usage{
-acorr(x, gain = NULL, ...)
+acorr(x, padlongitude = T, ...)
 }
 \arguments{
-\item{x}{A raster* object}
+\item{x}{A raster* object. Missing values are indicated by NA.}
 
-\item{gain}{number to multiply the values by prior to writing to disk.  If NULL, the original values in [0,1] will be written.  Note that the output file's metadata does not store this gain value.}
+\item{padlongitude}{`logical` indicating whether to pad the file in the longitude (x) dimension.  If the raster spans from -180 to 180, set padlongitude=F}
+
+\item{...}{passed to writeRaster.  If filename exists, output file will be written using writeRaster.  If NULL a temporary file is written as in the raster package.}
 }
 \value{
 The spatial autocorrelation matrix
@@ -117,10 +119,12 @@ bwplot(cor.acor/10~cut(cor.dist,pretty(ftd$cor.dist,20)),data=ftd,ylab="Correlat
 }
 }
 \references{
-\url{http://en.wikipedia.org/wiki/WienerKhinchin_theorem}
+\url{en.wikipedia.org/wiki/WienerKhinchin_theorem}
 
 Xianlin Ma, Tingting Yao, A program for 2D modeling (cross) correlogram tables using fast Fourier transform, Computers & Geosciences, Volume 27, Issue 7, August 2001, Pages 763-774, ISSN 0098-3004, \url{http://dx.doi.org/10.1016/S0098-3004(01)00007-3}.
 
 \url{http://www.johnloomis.org/ece563/notes/freq/autoself/autoself.htm}
+
+\url{http://www.seas.upenn.edu/~ese502/NOTEBOOK/Part_II/4_Variograms.pdf}
 }
 
