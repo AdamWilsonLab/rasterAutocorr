@@ -9,7 +9,7 @@ library(dplyr)
 m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
 m2=raster(matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T))
 
-ac=acorr2(m1,normalize=F)
+ac=acorr2(m1,padlongitude=T,verbose=T)
 
 ## confirm nobs == nh11 on top of page 1179
 10^as.matrix(ac[["nobs"]])

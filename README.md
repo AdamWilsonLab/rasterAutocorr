@@ -9,6 +9,7 @@ Calculates spatial autocorrelation on a two-dimensional raster* object using fft
 library(devtools) 
 install_github("adammwilson/rasterAutocorr")
 ```
+*Note:*  This package is still in development and almost certainly contains bugs.
 
 ## Details
 
