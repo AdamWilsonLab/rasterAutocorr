@@ -31,9 +31,14 @@ acorr=function(x,padlongitude=T,verbose=T,...){
   # make an indicator matrix with 1's for all data values & O's for missing values
   if(verbose) print("Identifying missing data")
   xnull=as.matrix(extend(!is.na(x),extx2,val=0))
-  
+  if(verbose) {
+    print(class(xnull))
+    print(class(x1))
+    print(x1[1:10,1:10])
+    print(xnull[1:10,1:10])
+  }
   # in data matrix, replace missing values by 0;
-  x1[xnull==0]<-0
+  x1[xnull==0]=0
 
   if(verbose) print("Running the initial FFTs")  
   fx1=fft(x1)  # fourier transform of xl
