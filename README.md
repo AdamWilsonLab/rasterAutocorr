@@ -14,7 +14,7 @@ install_github("adammwilson/rasterAutocorr")
 
 Package:	 rasterAutocorr
 Type:	 Package
-Version:	 0.0001
+Version:	 0.1
 Date:	 2014-05-23
 License:	 BSD
 autocor calculates spatial autocorrelation.
