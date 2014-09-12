@@ -17,7 +17,7 @@ acor_table=function(x,maxdist=1500,verbose=F){
   ftd$dist2=as.numeric(as.character((cut(ftd$dist,rasbins,labels=rasres/2+rasbins[-length(rasbins)]))))
   ## take mean by distance bin
   if(verbose) print("Summarizing by distance bin")
-  ftd2 <- group_by(ftd, dist2,type)
+  ftd2 <- group_by(ftd, dist2)
   ftd2 <- summarise(ftd2,
                     min = min(values, na.rm = TRUE),
                     max = max(values, na.rm = TRUE),
