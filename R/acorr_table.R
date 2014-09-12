@@ -1,7 +1,7 @@
 acor_table=function(x,maxdist=1500){
   ## run the autocorrelation function and write out the output raster
   wrapglobe=!(extent(x)@xmin==-180&extent(x)@xmax==180)  #does this region wrap the globe?
-  ac=acorr2(x,padlongitude=wrapglobe)
+  ac=acorr(x,padlongitude=wrapglobe)
   ## build the table of values to construct the correlograms
   ftd=rbind.data.frame(
     data.frame(values=values(ac[["acor"]])/10,dist=values(ac[["dist"]]),n=values(ac[["nobs"]]))
