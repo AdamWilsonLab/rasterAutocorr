@@ -1,8 +1,9 @@
-acor_table=function(x,maxdist=1500){
+acor_table=function(x,maxdist=1500,verbose=F){
   ## run the autocorrelation function and write out the output raster
   wrapglobe=!(extent(x)@xmin==-180&extent(x)@xmax==180)  #does this region wrap the globe?
-  ac=acorr(x,padlongitude=wrapglobe)
+  ac=acorr(x,padlongitude=wrapglobe,verbose=verbose)
   ## build the table of values to construct the correlograms
+  if(verbose) print("Extracting autocorrelation values for table and filtering to maxdist")
   ftd=rbind.data.frame(
     data.frame(values=values(ac[["acor"]])/10,dist=values(ac[["dist"]]),n=values(ac[["nobs"]]))
   )
@@ -15,6 +16,7 @@ acor_table=function(x,maxdist=1500){
   rasbins=c(-1,seq(0,max(ftd$dist)+rasres,by=rasres))
   ftd$dist2=as.numeric(as.character((cut(ftd$dist,rasbins,labels=rasres/2+rasbins[-length(rasbins)]))))
   ## take mean by distance bin
+  if(verbose) print("Summarizing by distance bin")
   ftd2 <- group_by(ftd, dist2,type)
   ftd2 <- summarise(ftd2,
                     min = min(values, na.rm = TRUE),
