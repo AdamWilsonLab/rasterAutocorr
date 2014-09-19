@@ -9,7 +9,7 @@ library(dplyr)
 m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
 m2=raster(matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T))
 
-ac=acorr2(m1,padlongitude=T,verbose=T)
+ac=acorr(m1,padlongitude=T,verbose=T)
 
 ## confirm nobs == nh11 on top of page 1179
 10^as.matrix(ac[["nobs"]])
@@ -42,7 +42,7 @@ values(r)=t(look)
 
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
-a1=acorr2(r)
+a1=acorr(r)
 
 ## get directions for each shift to facilitate plotting of the correlogram
 d2=acorr_dir(r)
@@ -71,7 +71,7 @@ ftd2 <- summarise(ftd2,
 head(ftd2)
 
 ## plot the correlogram
-xyplot(mean/10~dist2,type=c("l"),span=.3,data=ftd2,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(mean/10~dist2,type=c("point","l"),span=.3,data=ftd2,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.\n  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
 bwplot(cor.acor/10~cut(cor.dist,pretty(ftd$cor.dist,20)),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond\nto shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+
