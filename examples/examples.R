@@ -5,7 +5,7 @@ require(fields)
 require(latticeExtra)
 library(dplyr)
 
-## first show the examples in Marcotte, Denis. 1996. “Fast Variogram Computation with FFT.” Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
+## first show the examples in Marcotte, Denis. 1996. "Fast Variogram Computation with FFT." Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
 m1=raster(matrix(c(3,6,5,7,2,2,4,NA,0),ncol=3,byrow=T))
 m2=raster(matrix(c(10,NA,5,NA,8,7,5,9,11),ncol=3,byrow=T))
 
