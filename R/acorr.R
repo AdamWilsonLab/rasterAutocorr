@@ -38,7 +38,7 @@ acorr=function(x,padlongitude=T,verbose=T,...){
   fx1=fft(x1)  # fourier transform of xl
   fx1_x1=fft(x1*x1)    # fourier transform of x1*x1
   
-  fxnull=fft(xnull)  # fourier transform of the indicator matrik
+  fxnull=fft(xnull)  # fourier transform of the indicator matrix
   # compute number of pairs at all lags
   if(verbose) print("Computing the number of observations at each lag")
   nobs=round(Re(ifft(Conj(fxnull)*fxnull)))
