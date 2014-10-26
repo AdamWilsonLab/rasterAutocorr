@@ -1,9 +1,10 @@
 ####################################  FFT to Spatial correlogram  #######################################
 ############################  Analyses to assess the FFT algorithm  ##############################
+#Testing rasterAutocor packages and generating 
 #Analyses, figures, tables and data for the  paper are also produced in the script.
 #AUTHOR: Benoit Parmentier 
 #CREATED ON: 10/16/2014  
-#MODIFIED ON: 10/19/2014            
+#MODIFIED ON: 10/26/2014            
 #Version: 1
 #PROJECT: Environmental Layers project                                     
 #################################################################################################
@@ -57,7 +58,7 @@ values(r)=t(look)
 ## fit the complete spatial autocorrelation using fft()
 ## this function is the thing I need to confirm is working correctly
 a1=acorr(r)
-
+debug(acorr)
 ## get directions for each shift to facilitate plotting of the correlogram
 d2=acorr_dir(r)
 
