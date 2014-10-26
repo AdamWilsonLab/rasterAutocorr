@@ -38,6 +38,7 @@ acorr=function(x,padlongitude=T,verbose=T,...){
 
   if(verbose) print("Running the initial FFTs")  
   fx1=fft(x1)  # fourier transform of x1, calling C code implementation of Fortran  Singleton   1979
+  #fft is a 
   fx1_x1=fft(x1*x1)    # fourier transform of x1*x1, this is very fast! why is this here?
   
   fxnull=fft(xnull)  # fourier transform of the indicator matrix? ok 1,0
@@ -49,8 +50,16 @@ acorr=function(x,padlongitude=T,verbose=T,...){
   ## compute the correlogram
   m1=Re(ifft(Conj(fx1)*fxnull))/mnobs #is this the normalization?
   m2=Re(ifft(Conj(fxnull)*fx1))/mnobs # I'm confused...
-  #PSD <- Conj(fx1)*fx1)
+  PSD <- Conj(fx1)*fx1 #compute hte square of amplitude/norm of FFT complex number which correspond o the amplitude of frequencies
+  PSD_r <-raster(Re(PSD)) 
+  plot(PSD_r) #plotting the image power spectrum....mm not working
+  #sqrt(PSD_r)
+  plot(sqrt((PSD_r)) #ok taking the amplitude
+  test<-ifft(PSD) 
+  plot(raster(Re(test))) #plotting the autocorrelation.. range is huge!!! 250,000 ah ok need to normalize?
   g=Re(ifft(Conj(fx1)*fx1)/mnobs-m1*m2) #Ok is this the calucation autocorrelation surface??
+  g_r <-raster(g)
+  plot(g_r)
   #http://faculty.olin.edu/bstorey/Notes/Fourier.pdf
   
   if(verbose) print("Shifting the FFT array") # why?
