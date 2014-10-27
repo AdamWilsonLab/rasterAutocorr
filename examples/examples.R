@@ -57,9 +57,9 @@ d2=acorr_dir(r)
 ftd=data.frame(cor=values(a1))#,dir=values(d2))
 
 ## round to  faciliate binning
-ftd$dist2=round(ftd$cor.dist,3)#,c(0:50,seq(51,1000,by=10)))
+ftd$dist=round(ftd$cor.dist,3)#,c(0:50,seq(51,1000,by=10)))
 ## take mean by km
-ftd2 <- group_by(ftd, dist2)
+ftd2 <- group_by(ftd, dist)
 ftd2 <- summarise(ftd2,
                   min = min(cor.acor, na.rm = TRUE),
                   max = max(cor.acor, na.rm = TRUE),
@@ -71,7 +71,7 @@ ftd2 <- summarise(ftd2,
 head(ftd2)
 
 ## plot the correlogram
-xyplot(mean/10~dist2,type=c("point","l"),span=.3,data=ftd2,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.\n  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
+xyplot(mean/10~dist,type=c("point","l"),span=.3,data=ftd2,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond to shifts of different directions (north, south, etc.) from the origin.\n  There is one point on the plot for each pixel.",auto.key=T,lwd=2,pch=16,cex=.25)+
   layer(panel.abline(h=0))
 
 bwplot(cor.acor/10~cut(cor.dist,pretty(ftd$cor.dist,20)),data=ftd,ylab="Correlation",xlab="Distance",main="Correlogram",sub="Different pixels within a distance class correspond\nto shifts of different directions (north, south, etc.) from the origin",col="black",fill="grey",scales=list(x=list(rot=45)))+

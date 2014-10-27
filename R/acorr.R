@@ -36,7 +36,7 @@ acorr=function(x,padlongitude=T,verbose=T,...){
 
   if(verbose) print("Running the initial FFTs")  
   fx1=fft(x1)  # fourier transform of xl
-  fx1_x1=fft(x1*x1)    # fourier transform of x1*x1
+  #fx1_x1=fft(x1*x1)    # fourier transform of x1*x1
   
   fxnull=fft(xnull)  # fourier transform of the indicator matrix
   # compute number of pairs at all lags
@@ -66,6 +66,6 @@ g2=fftshift2(g)*10
   names(acor)=c("acor","nobs","dist")
 #  if(exists("filename",inherits=F)) acor2=writeRaster(acor,...)
   if(verbose) print("Cleaning up")
-  rm(x,rx,x1,fx1,fx1_x1,fxnull,m1,m2,g,nobs,g3,d1,nobs3);gc()
+  rm(x,rx,x1,fx1,fxnull,m1,m2,g,nobs,g3,d1,nobs3);gc()
   return(acor)
 }
