@@ -2,7 +2,6 @@
 # packages used for the data generation
 require(raster)
 require(fields)
-require(latticeExtra)
 library(dplyr)
 
 ## first show the examples in Marcotte, Denis. 1996. "Fast Variogram Computation with FFT." Computers & Geosciences 22 (10): 1175–86. doi:10.1016/S0098-3004(96)00026-X.
