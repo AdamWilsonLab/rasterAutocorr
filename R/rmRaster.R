@@ -1,4 +1,4 @@
-#' Calculates the full spatial autocorrelation on a raster using fft.
+#' Really Remove Raster Temp files.
 #'
 #' @description Really Remove Raster Temp files. This function checks the path of a raster object and removes it from disk as well as from the R workspace.
 #' @param x A raster* object. 

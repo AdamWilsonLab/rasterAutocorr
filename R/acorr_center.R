@@ -1,4 +1,3 @@
-
 #' Finds the center pixel to faciltate comparison of results from \code{acorr}.
 #'
 #'

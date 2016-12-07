@@ -1,3 +1,6 @@
+#' @export
+#' @import raster dplyr
+
 acor_regiontable=function(x,region,maxdist=1500){
   ## create subset
   #reg=crop(x,region,dataType="INT2U",overwrite=T,dataType='INT2U',NAflag=65535)
