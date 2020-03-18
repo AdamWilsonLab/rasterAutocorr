@@ -12,7 +12,7 @@
 acorr_center=function(x){
   center = ceiling(dim(x)/2)
   # Create an empty raster to hold the output
-  center2=x#raster(x,xmn=-nc/2,xmx=nc/2,ymn=-nr/2,ymx=nr/2)  
+  center2=x
   # Fill the raster with NAs
   values(center2)=NA
   # Replace the center pixel with a one  
